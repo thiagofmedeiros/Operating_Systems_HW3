@@ -12,8 +12,8 @@
 #include <sys/resource.h>
 #include <stdlib.h>
 /* Tested by LOH 2/1/22. */
-/* compile with gcc -ofname thread-template.c -lpthread */
-/* Solve with mutex locks */
+/* compile with gcc -ofname main.c -lpthread */
+/* Solve with semaphores */
 
 struct rusage mytiming;
 struct timeval mytimeval;
