@@ -2,6 +2,42 @@
 *   Name: Thiago André Ferreira Medeiros
 */
 
+/*
+ * 3 runs of mutex had the following times:
+ *  run 1:
+ *          Time used is sec: 0, usec 666330
+ *          System Time used is sec: 0, usec 1000
+ *
+ *  run 2:
+ *          Time used is sec: 0, usec 673074
+ *          System Time used is sec: 0, usec 0
+ *
+ *  run 3:
+ *          Time used is sec: 0, usec 612624
+ *          System Time used is sec: 0, usec 1001
+ *
+ * The medium total time for mutex is : 651343
+ *
+ * 3 runs of semaphores for 2 threads had the following times:
+ *  run 1:
+ *          Time used is sec: 0, usec 482937
+ *          System Time used is sec: 0, usec 412932
+ *
+ *  run 2:
+ *          Time used is sec: 0, usec 391142
+ *          System Time used is sec: 0, usec 305579
+ *
+ *  run 3:
+ *          Time used is sec: 0, usec 296120
+ *          System Time used is sec: 0, usec 237099
+ *
+ * The medium total time for semaphores is : 708603
+ *
+ * Semaphores spend almost an equal amount of time in user mode and kernel mode and the switch
+ * between contexts seems to make it run slower than the mutex solution
+ *
+ */
+
 #define _REENTRANT
 #include <pthread.h>
 #include <semaphore.h>
@@ -38,6 +74,7 @@ void * thread1(void *arg)
     int line = 0;
     while (line < 3000000)
     {
+        // Wait for semaphore
         sem_wait (&mutex);
 
         if (counter->value % 100 == 0 &&
@@ -54,6 +91,7 @@ void * thread1(void *arg)
             counter->value = counter->value / 2;
         }
 
+        // signal semaphore
         sem_post (&mutex);
     }
     // Ignore if you like.  Your counter value is the shared variable
@@ -73,6 +111,7 @@ void * thread2(void *arg)
     int count;
     while (line < 3000000)
     {
+        // Wait for semaphore
         sem_wait (&mutex);
 
         line++;
@@ -83,6 +122,7 @@ void * thread2(void *arg)
         counter->value = counter->value * 2;
         counter->value = counter->value / 2;
 
+        // signal semaphore
         sem_post(&mutex);
 
     }
@@ -102,6 +142,7 @@ void * thread3(void *arg)
     int count;
     while (line < 3000000)
     {
+        // Wait for semaphore
         sem_wait (&mutex);
 
         line++;
@@ -112,6 +153,7 @@ void * thread3(void *arg)
         counter->value = counter->value * 2;
         counter->value = counter->value / 2;
 
+        // signal semaphore
         sem_post(&mutex);
 
     }
@@ -131,7 +173,9 @@ int main()
     pthread_t	tid3[1];     /* process id for thread 3 */
     pthread_attr_t	attr[1];     /* attribute pointer array */
 
+    // Init Semaphore
     sem_init(&mutex, 0, 1);
+
     counter = (struct shared_dat *) malloc(sizeof(struct shared_dat));
 
     /* initialize shared memory to 0 */
