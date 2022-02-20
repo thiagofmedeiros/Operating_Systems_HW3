@@ -93,6 +93,8 @@ void * thread2(void *arg)
 /****************************************************************
 This function increases the value of shared variable "counter"
 by one 3000000 times
+ Could use thread2 function on a third thread, but the printing
+ would be from the wrong thread
 ****************************************************************/
 void * thread3(void *arg)
 {
