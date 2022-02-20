@@ -154,6 +154,7 @@ int main()
 
 
 /* Wait for the threads to finish */
+    pthread_join(tid3[0], NULL);
     pthread_join(tid2[0], NULL);
     pthread_join(tid1[0], NULL);
 
